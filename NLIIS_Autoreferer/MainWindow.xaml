@@ -1,0 +1,74 @@
+﻿<Window x:Class="NLIIS_Autoreferer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NLIIS_Language_recognizer"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="150" Width="715">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="100" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+        
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Height="20">
+            <MenuItem Header="About">
+                <MenuItem Header="Help" Click="Help_Click"></MenuItem>
+                <MenuItem Header="Authors" Click="Authors_Click"></MenuItem>
+            </MenuItem>
+        </Menu>
+        
+        <TextBox 
+            Grid.Row="1" Grid.Column="0" 
+            Height="20" Width="290"
+            MaxLines="1" TextWrapping="NoWrap"
+            Name="UploadPath"
+            IsReadOnly="True"
+        />
+        <Button 
+            Grid.Row="1" Grid.Column="1"
+            Content="Open..." HorizontalContentAlignment="Center"
+            Height="20" Width="90"
+            Click="ButtonFile_OnClick"
+        />
+        <ComboBox Grid.Row="1" Grid.Column="2"
+                  Name="UploadLanguage"
+                  Height="20" Width="90">
+            <ComboBoxItem IsSelected="true" Content="Russian"/>
+            <ComboBoxItem Content="Italian"/>
+        </ComboBox>
+        <ComboBox Grid.Row="1" Grid.Column="3"
+                  Name="UploadMethod"
+                  Height="20" Width="90">
+            <ComboBoxItem IsSelected="true" Content="FrequencyWord"/>
+            <ComboBoxItem Content="ShortWord"/>
+        </ComboBox>
+        <Button 
+            Name="ButtonUpload"
+            IsEnabled="False"
+            Grid.Row="1" Grid.Column="4"
+            Content="Upload" HorizontalContentAlignment="Center"
+            Height="20" Width="90"
+            Click="ButtonUpload_OnClick"
+        />
+        <Button
+            Name="ButtonRecognize"
+            IsEnabled="False"
+            Grid.Row="2" Grid.Column="4"
+            Content="Recognize" HorizontalContentAlignment="Center"
+            Height="20" Width="90"
+            Click="ButtonRecognize_OnClick"
+        />
+        
+        <Label Name="LangsLabel" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">Recognized languages...</Label>
+    </Grid>
+</Window>
