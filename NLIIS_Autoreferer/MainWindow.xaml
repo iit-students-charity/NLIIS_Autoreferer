@@ -38,7 +38,7 @@
             Grid.Row="1" Grid.Column="1"
             Content="Open..." HorizontalContentAlignment="Center"
             Height="20" Width="90"
-            Click="ButtonFile_OnClick"
+            Click="OpenFileDialog"
         />
         <ComboBox Grid.Row="1" Grid.Column="2"
                   Name="UploadLanguage"
@@ -53,12 +53,11 @@
             <ComboBoxItem Content="ShortWord"/>
         </ComboBox>
         <Button 
-            Name="ButtonUpload"
             IsEnabled="False"
             Grid.Row="1" Grid.Column="4"
             Content="Upload" HorizontalContentAlignment="Center"
             Height="20" Width="90"
-            Click="ButtonUpload_OnClick"
+            Click="OpenFileDialog"
         />
     </Grid>
 </Window>

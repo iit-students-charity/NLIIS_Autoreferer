@@ -30,17 +30,11 @@ namespace NLIIS_Autoreferer
             MessageBox.Show("Group 721701:\nSemenikhin Nikita,\nStryzhych Angelika", "Authors");
         }
         
-        private void ButtonFile_OnClick(object sender, RoutedEventArgs e)
+        private void OpenFileDialog(object sender, RoutedEventArgs e)
         {
             if (_openFileDialog.ShowDialog() == true)
             {
-                _openFileDialog.FileName
-
-                if (UploadPath.Text.Length > 0)
-                {
-                    UploadPath.Text = UploadPath.Text.Substring(0, UploadPath.Text.Length - 1);
-                    ButtonUpload.IsEnabled = true;
-                }
+                _documentToReferPath = _openFileDialog.FileName;
             }
         }
     }

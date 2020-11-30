@@ -10,4 +10,8 @@
       <PackageReference Include="BitMiracle.Docotic.Pdf.Beta" Version="4.6.6905" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Models" />
+    </ItemGroup>
+
 </Project>

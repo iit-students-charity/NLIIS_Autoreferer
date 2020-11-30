@@ -15,5 +15,33 @@ namespace NLIIS_Autoreferer.Services
             
             return pdf.GetText();
         }
+        
+        public static IEnumerable<string> GetWordsSet(string text, string language)
+        {
+            var pattern = GetWordMatchPattern(language);
+            var wordsEntries = Regex.Matches(text, pattern);
+            var uniqueWords = wordsEntries.Select(match => match.Value).ToHashSet().AsEnumerable();
+            
+            return uniqueWords;
+        }
+
+        private static string GetWordMatchPattern(string language)
+        {
+            switch (language)
+            {
+                case "Russian":
+                {
+                    return "[а-яА-Я\\-]+";
+                }
+                case "Deutsch":
+                {
+                    return "[a-zA-ZäöüÄÖÜß\\-]+";
+                }
+                default:
+                {
+                    throw new ArgumentException($"Language {language} is not supported");
+                }
+            }
+        }
     }
 }
