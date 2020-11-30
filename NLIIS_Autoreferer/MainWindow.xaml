@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:NLIIS_Language_recognizer"
+        xmlns:local="clr-namespace:NLIIS_Autoreferer"
         mc:Ignorable="d"
         Title="MainWindow" Height="150" Width="715">
     <Grid>
@@ -60,15 +60,5 @@
             Height="20" Width="90"
             Click="ButtonUpload_OnClick"
         />
-        <Button
-            Name="ButtonRecognize"
-            IsEnabled="False"
-            Grid.Row="2" Grid.Column="4"
-            Content="Recognize" HorizontalContentAlignment="Center"
-            Height="20" Width="90"
-            Click="ButtonRecognize_OnClick"
-        />
-        
-        <Label Name="LangsLabel" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">Recognized languages...</Label>
     </Grid>
 </Window>

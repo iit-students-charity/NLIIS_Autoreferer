@@ -1,7 +1,7 @@
 ﻿<Application x:Class="NLIIS_Autoreferer.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:NLIIS_Language_recognizer"
+             xmlns:local="clr-namespace:NLIIS_Autoreferer"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          
