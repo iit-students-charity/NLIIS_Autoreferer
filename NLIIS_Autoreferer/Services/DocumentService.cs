@@ -18,42 +18,42 @@ namespace NLIIS_Autoreferer.Services
             return pdf.GetText();
         }
         
-        public static IEnumerable<string> GetWordsSet(string text)
+        public static IEnumerable<string> GetWords(string text)
         {
             var pattern = GetWordMatchPattern();
-            var wordsEntries = Regex.Matches(text, pattern).Select(match => match.Value);
+            return Regex.Matches(text, pattern).Select(match => match.Value);
+        }
+        
+        public static IEnumerable<string> GetTerms(string text)
+        {
+            var wordsEntries = GetWords(text);
             var uniqueWords = wordsEntries.ToHashSet().AsEnumerable();
             
             return uniqueWords;
         }
         
-        public static IDictionary<string, decimal> GetWordsWeights(string text)
+        public static IDictionary<string, int> GetTermsFrequencies(string text)
         {
-            var pattern = GetWordMatchPattern();
-            var wordsEntries = Regex.Matches(text, pattern).Select(match => match.Value);
-            var wordsRawWeights = new Dictionary<string, decimal>();
+            var wordsEntries = GetWords(text);
+            var termsFrequencies = new Dictionary<string, int>();
 
             foreach (var wordEntry in wordsEntries)
             {
-                var currentWeight = 0m;
+                var currentWeight = 0;
                 
-                if (wordsRawWeights.ContainsKey(wordEntry))
+                if (termsFrequencies.ContainsKey(wordEntry))
                 {
-                    wordsRawWeights.TryGetValue(wordEntry, out currentWeight);
-                    wordsRawWeights.Remove(wordEntry);
+                    termsFrequencies.TryGetValue(wordEntry, out currentWeight);
+                    termsFrequencies.Remove(wordEntry);
                 }
                 
-                wordsRawWeights.Add(wordEntry, ++currentWeight);
+                termsFrequencies.Add(wordEntry, ++currentWeight);
             }
 
-            var wordsAdjustedWeights = wordsRawWeights.ToDictionary(
-                wordWeight => wordWeight.Key,
-                wordWeight => wordWeight.Value / wordsEntries.Count());
-
-            return wordsAdjustedWeights;
+            return termsFrequencies;
         }
 
-        private static string GetWordMatchPattern()
+        public static string GetWordMatchPattern()
         {
             return Language switch
             {

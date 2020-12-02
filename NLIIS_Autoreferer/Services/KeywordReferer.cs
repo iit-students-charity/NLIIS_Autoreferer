@@ -4,7 +4,7 @@
     {
         public string GenerateRefer(string text)
         {
-            var words = DocumentService.GetWordsSet(text);
+            var words = DocumentService.GetTerms(text);
             return null;
         }
     }
