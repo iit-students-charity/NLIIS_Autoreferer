@@ -61,40 +61,41 @@ namespace NLIIS_Autoreferer.Services
                 MaxTermFrequency = DocumentService.GetTermsFrequencies(text).Max(wordWeight => wordWeight.Value);
             }
 
-            var sentenceToChoose = new List<Sentence>();
-
             foreach (var sentence in Sentences)
             {
-                var sentenceWeight = PositionInDocument(sentence.Number) * PositionInParagraph(sentence.Number) * Score(sentence);
+                var sentenceWeight = PositionInDocument(sentence) * PositionInParagraph(sentence) * Score(sentence);
                 sentence.Weight = sentenceWeight;
             }
 
-            sentenceToChoose = Sentences.OrderByDescending(sentence => sentence.Weight).Take(10).ToList();
-            return string.Join(".", Sentences.Where(sentence => sentenceToChoose.Any(_ => _.Number == sentence.Number)));
+            var sentenceToChoose = Sentences
+                .OrderByDescending(sentence => sentence.Weight)
+                .Take(10)
+                .OrderBy(sentence => sentence.Number);
+            return string.Join(".", sentenceToChoose);
         }
 
-        private int CountSymbolsBeforeInDocument(int sentenceNumber)
+        private int CountSymbolsBeforeInDocument(Sentence sentence)
         {
             return Sentences
-                .TakeWhile(sentence => sentence.Number != sentenceNumber)
-                .Sum(sentence => sentence.Text.Length);
+                .TakeWhile(_ => _.Number != sentence.Number)
+                .Sum(_ => _.Text.Length);
         }
 
-        private int CountSymbolsBeforeInParagraph(int sentenceNumber)
+        private int CountSymbolsBeforeInParagraph(Sentence sentence)
         {
-            return Paragraphs.Single(paragraph => paragraph.Sentences.Any(sentence => sentence.Number == sentenceNumber))
-                .Sentences.TakeWhile(sentence => sentence.Number != sentenceNumber)
-                .Sum(sentence => sentence.Text.Length);
+            return Paragraphs.Single(paragraph => paragraph.Sentences.Any(_ => _.Number == sentence.Number))
+                .Sentences.TakeWhile(_ => _.Number != sentence.Number)
+                .Sum(_ => _.Text.Length);
         }
 
-        private decimal PositionInDocument(int sentenceNumber)
+        private decimal PositionInDocument(Sentence sentence)
         {
-            return 1 - CountSymbolsBeforeInDocument(sentenceNumber) / AllSymbolsCount;
+            return 1 - CountSymbolsBeforeInDocument(sentence) / AllSymbolsCount;
         }
 
-        private decimal PositionInParagraph(int sentenceNumber)
+        private decimal PositionInParagraph(Sentence sentence)
         {
-            return 1 - CountSymbolsBeforeInParagraph(sentenceNumber) / Paragraphs.Single(paragraph => paragraph.Sentences.Any(sentence => sentence.Number == sentenceNumber)).Text.Length;
+            return 1 - CountSymbolsBeforeInParagraph(sentence) / Paragraphs.Single(paragraph => paragraph.Sentences.Any(_ => _.Number == sentence.Number)).Text.Length;
         }
 
         private decimal Score(Sentence sentence)

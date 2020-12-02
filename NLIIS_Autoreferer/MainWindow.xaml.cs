@@ -7,6 +7,7 @@ namespace NLIIS_Autoreferer
     public partial class MainWindow : Window
     {
         private readonly OpenFileDialog _openFileDialog;
+        private readonly IReferer _classyReferer;
         
         public MainWindow()
         {
@@ -16,6 +17,7 @@ namespace NLIIS_Autoreferer
                 CheckFileExists = true,
                 Multiselect = false
             };
+            _classyReferer = new ClassyReferer();
             
             InitializeComponent();
         }
@@ -33,6 +35,8 @@ namespace NLIIS_Autoreferer
         private void Refer(object sender, RoutedEventArgs e)
         {
             DocumentService.Language = Language.Text;
+            var text = DocumentService.FromPDF(DocumentToReferPath.Text);
+            var classyRefer = _classyReferer.GenerateRefer(text);
         }
         
         private void OpenFileDialog(object sender, RoutedEventArgs e)

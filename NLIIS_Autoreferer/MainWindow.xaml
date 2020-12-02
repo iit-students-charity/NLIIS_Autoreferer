@@ -47,7 +47,6 @@
             <ComboBoxItem Content="Deutsch"/>
         </ComboBox>
         <Button 
-            IsEnabled="False"
             Grid.Row="1" Grid.Column="4"
             Content="Refer" HorizontalContentAlignment="Center"
             Height="20" Width="90"
