@@ -9,6 +9,8 @@ namespace NLIIS_Autoreferer.Services
 {
     public static class DocumentService
     {
+        public static string Language { get; set; }
+        
         public static string FromPDF(string path)
         {
             using var pdf = new PdfDocument(path);
@@ -16,32 +18,49 @@ namespace NLIIS_Autoreferer.Services
             return pdf.GetText();
         }
         
-        public static IEnumerable<string> GetWordsSet(string text, string language)
+        public static IEnumerable<string> GetWordsSet(string text)
         {
-            var pattern = GetWordMatchPattern(language);
-            var wordsEntries = Regex.Matches(text, pattern);
-            var uniqueWords = wordsEntries.Select(match => match.Value).ToHashSet().AsEnumerable();
+            var pattern = GetWordMatchPattern();
+            var wordsEntries = Regex.Matches(text, pattern).Select(match => match.Value);
+            var uniqueWords = wordsEntries.ToHashSet().AsEnumerable();
             
             return uniqueWords;
         }
-
-        private static string GetWordMatchPattern(string language)
+        
+        public static IDictionary<string, decimal> GetWordsWeights(string text)
         {
-            switch (language)
+            var pattern = GetWordMatchPattern();
+            var wordsEntries = Regex.Matches(text, pattern).Select(match => match.Value);
+            var wordsRawWeights = new Dictionary<string, decimal>();
+
+            foreach (var wordEntry in wordsEntries)
             {
-                case "Russian":
+                var currentWeight = 0m;
+                
+                if (wordsRawWeights.ContainsKey(wordEntry))
                 {
-                    return "[а-яА-Я\\-]+";
+                    wordsRawWeights.TryGetValue(wordEntry, out currentWeight);
+                    wordsRawWeights.Remove(wordEntry);
                 }
-                case "Deutsch":
-                {
-                    return "[a-zA-ZäöüÄÖÜß\\-]+";
-                }
-                default:
-                {
-                    throw new ArgumentException($"Language {language} is not supported");
-                }
+                
+                wordsRawWeights.Add(wordEntry, ++currentWeight);
             }
+
+            var wordsAdjustedWeights = wordsRawWeights.ToDictionary(
+                wordWeight => wordWeight.Key,
+                wordWeight => wordWeight.Value / wordsEntries.Count());
+
+            return wordsAdjustedWeights;
+        }
+
+        private static string GetWordMatchPattern()
+        {
+            return Language switch
+            {
+                "Russian" => "[а-яА-Я\\-]+",
+                "Deutsch" => "[a-zA-ZäöüÄÖÜß\\-]+",
+                _ => throw new ArgumentException($"Language {Language} is not supported")
+            };
         }
     }
 }

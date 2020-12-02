@@ -31,7 +31,7 @@
             Grid.Row="1" Grid.Column="0" 
             Height="20" Width="290"
             MaxLines="1" TextWrapping="NoWrap"
-            Name="UploadPath"
+            Name="DocumentToReferPath"
             IsReadOnly="True"
         />
         <Button 
@@ -41,23 +41,17 @@
             Click="OpenFileDialog"
         />
         <ComboBox Grid.Row="1" Grid.Column="2"
-                  Name="UploadLanguage"
+                  Name="Language"
                   Height="20" Width="90">
             <ComboBoxItem IsSelected="true" Content="Russian"/>
-            <ComboBoxItem Content="Italian"/>
-        </ComboBox>
-        <ComboBox Grid.Row="1" Grid.Column="3"
-                  Name="UploadMethod"
-                  Height="20" Width="90">
-            <ComboBoxItem IsSelected="true" Content="FrequencyWord"/>
-            <ComboBoxItem Content="ShortWord"/>
+            <ComboBoxItem Content="Deutsch"/>
         </ComboBox>
         <Button 
             IsEnabled="False"
             Grid.Row="1" Grid.Column="4"
-            Content="Upload" HorizontalContentAlignment="Center"
+            Content="Refer" HorizontalContentAlignment="Center"
             Height="20" Width="90"
-            Click="OpenFileDialog"
+            Click="Refer"
         />
     </Grid>
 </Window>

@@ -1,12 +1,12 @@
 ﻿using System.Windows;
 using Microsoft.Win32;
+using NLIIS_Autoreferer.Services;
 
 namespace NLIIS_Autoreferer
 {
     public partial class MainWindow : Window
     {
         private readonly OpenFileDialog _openFileDialog;
-        private string _documentToReferPath;
         
         public MainWindow()
         {
@@ -29,12 +29,17 @@ namespace NLIIS_Autoreferer
         {
             MessageBox.Show("Group 721701:\nSemenikhin Nikita,\nStryzhych Angelika", "Authors");
         }
+
+        private void Refer(object sender, RoutedEventArgs e)
+        {
+            DocumentService.Language = Language.Text;
+        }
         
         private void OpenFileDialog(object sender, RoutedEventArgs e)
         {
             if (_openFileDialog.ShowDialog() == true)
             {
-                _documentToReferPath = _openFileDialog.FileName;
+                DocumentToReferPath.Text = _openFileDialog.FileName;
             }
         }
     }

@@ -4,7 +4,8 @@
     {
         public string GenerateRefer(string text)
         {
-            throw new System.NotImplementedException();
+            var words = DocumentService.GetWordsSet(text);
+            return null;
         }
     }
 }
