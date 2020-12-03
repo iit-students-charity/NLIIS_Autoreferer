@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace NLIIS_Autoreferer.Services
 {
@@ -39,7 +40,9 @@ namespace NLIIS_Autoreferer.Services
             {
                 var paragraphCounter = 0;
                 var sentenceCounter = 0;
-                Paragraphs = text.Split("\n").Select(paragraphText => 
+                Paragraphs = text.Split("\n")
+                    .Where(_ => Regex.Match(_, DocumentService.GetWordMatchPattern()).Success)
+                    .Select(paragraphText => 
                     new Paragraph
                     {
                         Number = paragraphCounter++,

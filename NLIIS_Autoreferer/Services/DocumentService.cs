@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using BitMiracle.Docotic.Pdf;
 
@@ -16,6 +19,20 @@ namespace NLIIS_Autoreferer.Services
             using var pdf = new PdfDocument(path);
             
             return pdf.GetText();
+        }
+        
+        public static string ToPDF(string text)
+        {
+            using var pdf = new PdfDocument();
+            
+            var page = pdf.Pages[0];
+            var textBox = page.AddTextBox("type", 55, 60, 90, 20);
+            textBox.Text = text;
+
+            var path = $"C:\\{text.Substring(0, 10)}.pdf";
+            pdf.Save(path);
+            
+            return path;
         }
         
         public static IEnumerable<string> GetWords(string text)
@@ -57,8 +74,8 @@ namespace NLIIS_Autoreferer.Services
         {
             return Language switch
             {
-                "Russian" => "[а-яА-Я\\-]+",
-                "Deutsch" => "[a-zA-ZäöüÄÖÜß\\-]+",
+                "Russian" => "[а-яА-Я\\-]{2,}",
+                "Deutsch" => "[a-zA-ZäöüÄÖÜß\\-]{2,}",
                 _ => throw new ArgumentException($"Language {Language} is not supported")
             };
         }

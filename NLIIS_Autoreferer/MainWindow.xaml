@@ -5,22 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NLIIS_Autoreferer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="150" Width="715">
+        Title="Autoreferer" Height="120" Width="615">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="300" />
             <ColumnDefinition Width="100" />
             <ColumnDefinition Width="100" />
             <ColumnDefinition Width="100" />
-            <ColumnDefinition Width="100" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="50" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
         </Grid.RowDefinitions>
         
-        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5" Height="20">
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Height="20">
             <MenuItem Header="About">
                 <MenuItem Header="Help" Click="Help_Click"></MenuItem>
                 <MenuItem Header="Authors" Click="Authors_Click"></MenuItem>
@@ -47,10 +47,21 @@
             <ComboBoxItem Content="Deutsch"/>
         </ComboBox>
         <Button 
-            Grid.Row="1" Grid.Column="4"
+            Grid.Row="1" Grid.Column="3"
             Content="Refer" HorizontalContentAlignment="Center"
             Height="20" Width="90"
             Click="Refer"
+        />
+        
+        <Label 
+            Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+            Content="Classy: "
+            Name="ClassyReferPath"
+        />
+        <Label 
+            Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
+            Content="Keyword: "
+            Name="KeywordReferPath"
         />
     </Grid>
 </Window>

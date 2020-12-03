@@ -24,7 +24,8 @@ namespace NLIIS_Autoreferer
 
         private void Help_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(string.Empty);
+            MessageBox.Show("Upload a document via open file dialog\nChoose a language of the document\n" +
+                            "Press \"Refer\"\nGet paths to classy & keyword refers versions");
         }
         
         private void Authors_Click(object sender, RoutedEventArgs e)
@@ -37,6 +38,8 @@ namespace NLIIS_Autoreferer
             DocumentService.Language = Language.Text;
             var text = DocumentService.FromPDF(DocumentToReferPath.Text);
             var classyRefer = _classyReferer.GenerateRefer(text);
+
+            ClassyReferPath.Content = "Classy: " + DocumentService.ToPDF(classyRefer);
         }
         
         private void OpenFileDialog(object sender, RoutedEventArgs e)
