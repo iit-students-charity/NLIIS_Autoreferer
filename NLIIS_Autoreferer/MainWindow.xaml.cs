@@ -40,6 +40,7 @@ namespace NLIIS_Autoreferer
             var classyRefer = _classyReferer.GenerateRefer(text);
 
             ClassyReferPath.Content = "Classy: " + DocumentService.ToPDF(classyRefer);
+            _classyReferer.Clean();
         }
         
         private void OpenFileDialog(object sender, RoutedEventArgs e)

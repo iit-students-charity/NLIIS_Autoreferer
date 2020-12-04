@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
+using System.Drawing;
 using System.Linq;
-using System.Net.Http;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using BitMiracle.Docotic.Pdf;
 
@@ -26,10 +23,15 @@ namespace NLIIS_Autoreferer.Services
             using var pdf = new PdfDocument();
             
             var page = pdf.Pages[0];
-            var textBox = page.AddTextBox("type", 55, 60, 90, 20);
+            var textBox = page.AddTextBox("type", 10, 10, 500, 1000);
             textBox.Text = text;
+            textBox.FontSize = 14;
+            textBox.Multiline = true;
+            textBox.BackgroundColor = new PdfRgbColor(Color.Transparent);
+            textBox.ShowBorder = false;
+            textBox.ReadOnly = true;
 
-            var path = $"C:\\{text.Substring(0, 10)}.pdf";
+            var path = $"D:\\{text.Substring(0, 20)}.pdf";
             pdf.Save(path);
             
             return path;

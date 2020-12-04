@@ -7,5 +7,9 @@
             var words = DocumentService.GetTerms(text);
             return null;
         }
+
+        public void Clean()
+        {
+        }
     }
 }
