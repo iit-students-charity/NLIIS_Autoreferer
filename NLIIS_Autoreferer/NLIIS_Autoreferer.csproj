@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
-
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -14,4 +13,8 @@
       <Folder Include="Models" />
     </ItemGroup>
 
+    <ItemGroup>
+        <None Update="Services\KeywordSpecific\Deutsch.xml" CopyToOutputDirectory="PreserveNewest" />
+        <None Update="Services\KeywordSpecific\Russian.xml" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
 </Project>

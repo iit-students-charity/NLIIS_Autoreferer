@@ -1,12 +1,10 @@
 <?xml version="1.0"?>
 <dictionary lang="russian">
- <stemmer> 
- 
+ <stemmer>
      <step1_pre> 
 	  <rule>"|</rule> 
 	  <rule>(|</rule> 
 	 </step1_pre>
-	 
 	 
     <step1_post>
       <rule>."|</rule> 
@@ -20,7 +18,6 @@
 	  <rule>;|</rule> 
 	  <rule>!|</rule> 
 	 </step1_post>
- 
  
     <manual>
 	  <rule>wrote|write</rule>
@@ -147,4 +144,3 @@
 <word>я</word>
  </grader-tc>
 </dictionary>
-

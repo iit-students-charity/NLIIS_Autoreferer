@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Security.Permissions;
 using System.IO;
+using System.Linq;
 using System.Xml.Linq;
 using System.Reflection;
 
@@ -22,21 +23,20 @@ namespace NLIIS_Autoreferer.Services.KeywordSpecific
         public Dictionary<string, string> PrefixRules { get; set; }
         public Dictionary<string, string> SuffixRules { get; set; }
         public Dictionary<string, string> SynonymRules { get; set; }
-        public string Language { get; set; }
 
-        private Dictionary(){}
-
-        [FileIOPermission(SecurityAction.Demand, Read="$AppDir$\\dics")]
-        public static Dictionary LoadFromFile(string DictionaryLanguage)
+        [FileIOPermission(SecurityAction.Demand, Read="$AppDir$\\")]
+        public static Dictionary LoadFromFile(string dictionaryLanguage)
         {
-            string dictionaryFile = string.Format(@"{1}\dics\{0}.xml", DictionaryLanguage,
-               Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase).Substring(6));
+            var dictionaryFile = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}" +
+                                 $"\\Services\\KeywordSpecific\\{dictionaryLanguage}.xml";
+            
             if(!File.Exists(dictionaryFile))
             {
                 throw new FileNotFoundException("Could Not Load Dictionary: " + dictionaryFile);
             }
-            Dictionary dict = new Dictionary();
-            XElement doc = XElement.Load(dictionaryFile);
+            
+            var dict = new Dictionary();
+            var doc = XElement.Load(dictionaryFile);
             dict.Step1PrefixRules = LoadKeyValueRule(doc, "stemmer", "step1_pre");
             dict.Step1SuffixRules = LoadKeyValueRule(doc, "stemmer", "step1_post");
             dict.ManualReplacementRules = LoadKeyValueRule(doc, "stemmer", "manual");
@@ -48,10 +48,10 @@ namespace NLIIS_Autoreferer.Services.KeywordSpecific
             dict.DepreciateValueRule = LoadValueOnlyRule(doc, "grader-syn", "depreciate");
             dict.TermFreqMultiplierRule = LoadValueOnlySection(doc, "grader-tf");
 
-            List<string> unimpwords = new List<string>();
             dict.UnimportantWords = new List<Word>();
-            unimpwords = LoadValueOnlySection(doc, "grader-tc");
-            foreach (string unimpword in unimpwords)
+            var unimpwords = LoadValueOnlySection(doc, "grader-tc");
+            
+            foreach (var unimpword in unimpwords)
             {
                 dict.UnimportantWords.Add(new Word(unimpword));
             }
@@ -60,39 +60,35 @@ namespace NLIIS_Autoreferer.Services.KeywordSpecific
 
         private static List<string> LoadValueOnlySection(XElement doc, string section)
         {
-            List<string> list = new List<string>();
-            IEnumerable<XElement> step1pre = doc.Elements(section);
-            foreach (var x in step1pre.Elements())
-            {
-                list.Add(x.Value);
-            }
-            return list;
+            var step1pre = doc.Elements(section);
+
+            return step1pre.Elements().Select(x => x.Value).ToList();
         }
 
         private static List<string> LoadValueOnlyRule(XElement doc, string section, string container)
         {
-            List<string> list = new List<string>();
-            IEnumerable<XElement> step1pre = doc.Elements(section).Elements(container);
-            foreach (var x in step1pre.Elements())
-            {
-                list.Add(x.Value);                
-            }
-            return list;
+            var step1pre = doc.Elements(section).Elements(container);
+
+            return step1pre.Elements().Select(x => x.Value).ToList();
         }
 
         private static Dictionary<string, string> LoadKeyValueRule(XElement doc, string section, string container)
         {
-            Dictionary<string, string> dictionary = new Dictionary<string, string>();
-            IEnumerable<XElement> step1pre = doc.Elements(section).Elements(container);
+            var dictionary = new Dictionary<string, string>();
+            var step1pre = doc.Elements(section).Elements(container);
+            
             foreach (var x in step1pre.Elements())
             {
-                string rule = x.Value;
-                string[] keyvalue = rule.Split('|');
+                var rule = x.Value;
+                var keyvalue = rule.Split('|');
+                
                 if (!dictionary.ContainsKey(keyvalue[0]))
+                {
                     dictionary.Add(keyvalue[0], keyvalue[1]);
+                }
             }
+            
             return dictionary;
         }
-
     }
 }

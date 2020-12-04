@@ -1,4 +1,4 @@
-﻿using OpenTextSummarizer;
+﻿using NLIIS_Autoreferer.Services.KeywordSpecific;
 
 namespace NLIIS_Autoreferer.Services
 {
@@ -6,20 +6,16 @@ namespace NLIIS_Autoreferer.Services
     {
         public string GenerateRefer(string text)
         {
-            SummarizerArguments sumargs = new SummarizerArguments
+            var sumargs = new SummarizerArguments
             {
-                DictionaryLanguage = "en",
-                DisplayLines = sentCount,
+                DictionaryLanguage = DocumentService.Language,
+                DisplayLines = 10,
                 DisplayPercent = 0,
-                InputFile = "",
-                InputString = OriginalTextBox.Text // here your text
+                InputString = text
             };
-            SummarizedDocument doc = Summarizer.Summarize(sumargs);
-            string summary = string.Join("\r\n\r\n", doc.Sentences.ToArray());
-// do some stuff with summary. It is your result.
+            var doc = Summarizer.Summarize(sumargs);
             
-            var words = DocumentService.GetTerms(text);
-            return null;
+            return string.Empty;
         }
 
         public void Clean()

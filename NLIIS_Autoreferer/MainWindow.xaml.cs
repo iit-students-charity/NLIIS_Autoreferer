@@ -8,6 +8,7 @@ namespace NLIIS_Autoreferer
     {
         private readonly OpenFileDialog _openFileDialog;
         private readonly IReferer _classyReferer;
+        private readonly IReferer _keywordRefer;
         
         public MainWindow()
         {
@@ -18,6 +19,7 @@ namespace NLIIS_Autoreferer
                 Multiselect = false
             };
             _classyReferer = new ClassyReferer();
+            _keywordRefer = new KeywordReferer();
             
             InitializeComponent();
         }
@@ -37,10 +39,15 @@ namespace NLIIS_Autoreferer
         {
             DocumentService.Language = Language.Text;
             var text = DocumentService.FromPDF(DocumentToReferPath.Text);
+            
             var classyRefer = _classyReferer.GenerateRefer(text);
+            var keywordRefer = _keywordRefer.GenerateRefer(text);
 
             ClassyReferPath.Content = "Classy: " + DocumentService.ToPDF(classyRefer);
+            KeywordReferPath.Content = "Keyword: " + DocumentService.ToPDF(keywordRefer);
+            
             _classyReferer.Clean();
+            _keywordRefer.Clean();
         }
         
         private void OpenFileDialog(object sender, RoutedEventArgs e)
