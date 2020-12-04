@@ -13,9 +13,13 @@ namespace NLIIS_Autoreferer.Services.KeywordSpecific
 
         public override bool Equals(object obj)
         {
-            if (this.GetType() != obj.GetType()) return false;
-            Word arg = (Word)obj;
-            return this.Value.Equals(arg.Value, StringComparison.CurrentCultureIgnoreCase);
+            if (GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            var arg = (Word)obj;
+            return Value.Equals(arg.Value, StringComparison.CurrentCultureIgnoreCase);
         }
 
         public override int GetHashCode()

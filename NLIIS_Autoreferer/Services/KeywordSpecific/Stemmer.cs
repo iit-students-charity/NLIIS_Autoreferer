@@ -1,50 +1,52 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace NLIIS_Autoreferer.Services.KeywordSpecific
 {
-    internal class Stemmer
+    internal static class Stemmer
     {
-
         internal static Word StemWord(string word, Dictionary rules)
         {
             word = word.ToLower();
-            Word newword = new Word();
-            newword.TermFrequency = 1;
-            newword.Value = StemFormat(word, rules);
-            newword.Stem = StemStrip(word, rules);
+            var newword = new Word
+            {
+                TermFrequency = 1,
+                Value = StemFormat(word, rules),
+                Stem = StemStrip(word, rules)
+            };
+
             return newword;
         }
 
         internal static string StemStrip(string word, Dictionary rules)
         {
-            string originalWord = word;
+            var originalWord = word;
             word = StemFormat(word, rules);
             word = ReplaceWord(word, rules.ManualReplacementRules);
             word = StripPrefix(word, rules.PrefixRules);
             word = StripSuffix(word, rules.SuffixRules);
             word = ReplaceWord(word, rules.SynonymRules);
-            if (word.Length <= 2) word = StemFormat(originalWord, rules);
-            return word;
+            if (word.Length <= 2)
+            {
+                word = StemFormat(originalWord, rules);
+            }
 
+            return word;
         }
 
         internal static string StemFormat(string word, Dictionary rules)
         {
             word = StripPrefix(word, rules.Step1PrefixRules);
             word = StripSuffix(word, rules.Step1SuffixRules);
+            
             return word;
         }
 
         private static string StripSuffix(string word, Dictionary<string, string> suffixRule)
         {
-            //not simply using .Replace() in this method in case the 
-            //rule.Key exists multiple times in the string.
-            foreach (KeyValuePair<string, string> rule in suffixRule)
+            foreach (var (key, value) in suffixRule.Where(rule => word.EndsWith(rule.Key)))
             {
-                if (word.EndsWith(rule.Key))
-                {
-                    word = word.Substring(0, word.Length - rule.Key.Length) + rule.Value;
-                }
+                word = word.Substring(0, word.Length - key.Length) + value;
             }
 
             return word;
@@ -52,12 +54,9 @@ namespace NLIIS_Autoreferer.Services.KeywordSpecific
 
         private static string ReplaceWord(string word, Dictionary<string, string> replacementRule)
         {
-            foreach (KeyValuePair<string, string> rule in replacementRule)
+            foreach (var rule in replacementRule.Where(rule => word == rule.Key))
             {
-                if (word == rule.Key)
-                {
-                    return rule.Value;
-                }
+                return rule.Value;
             }
 
             return word;
@@ -65,18 +64,12 @@ namespace NLIIS_Autoreferer.Services.KeywordSpecific
 
         private static string StripPrefix(string word, Dictionary<string, string> prefixRule)
         {
-            //not simply using .Replace() in this method in case the 
-            //rule.Key exists multiple times in the string.
-            foreach (KeyValuePair<string, string> rule in prefixRule)
+            foreach (var (key, value) in prefixRule.Where(rule => word.StartsWith(rule.Key)))
             {
-                if (word.StartsWith(rule.Key))
-                {
-                    word = rule.Value + word.Substring(rule.Key.Length);
-                }
+                word = value + word.Substring(key.Length);
             }
+
             return word;
-
         }
-
     }
 }

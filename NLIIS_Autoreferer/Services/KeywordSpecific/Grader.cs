@@ -16,6 +16,7 @@ namespace NLIIS_Autoreferer.Services.KeywordSpecific
         {
             article.Concepts = new List<string> ();
             var baseFreq = article.ImportantWords[5].TermFrequency;
+            
             if (article.ImportantWords.Count > 5)
             {
                 article.Concepts = article.ImportantWords.Where(p => p.TermFrequency >= baseFreq).Select(p => p.Value).ToList();                

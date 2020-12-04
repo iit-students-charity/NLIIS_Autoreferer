@@ -14,9 +14,6 @@ namespace NLIIS_Autoreferer.Services.KeywordSpecific
         public List<string> NotALinebreakRules { get; set; }
         public List<string> DepreciateValueRule { get; set; }
         public List<string> TermFreqMultiplierRule { get; set; }
-
-        //the replacement rules are stored as KeyValuePair<string,string>s 
-        //the Key is the search term. the Value is the replacement term
         public Dictionary<string, string> Step1PrefixRules { get; set; } 
         public Dictionary<string, string> Step1SuffixRules { get; set; }
         public Dictionary<string, string> ManualReplacementRules { get; set; }
@@ -29,26 +26,23 @@ namespace NLIIS_Autoreferer.Services.KeywordSpecific
         {
             var dictionaryFile = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}" +
                                  $"\\Services\\KeywordSpecific\\{dictionaryLanguage}.xml";
-            
-            if(!File.Exists(dictionaryFile))
-            {
-                throw new FileNotFoundException("Could Not Load Dictionary: " + dictionaryFile);
-            }
-            
-            var dict = new Dictionary();
-            var doc = XElement.Load(dictionaryFile);
-            dict.Step1PrefixRules = LoadKeyValueRule(doc, "stemmer", "step1_pre");
-            dict.Step1SuffixRules = LoadKeyValueRule(doc, "stemmer", "step1_post");
-            dict.ManualReplacementRules = LoadKeyValueRule(doc, "stemmer", "manual");
-            dict.PrefixRules = LoadKeyValueRule(doc, "stemmer", "pre");
-            dict.SuffixRules = LoadKeyValueRule(doc, "stemmer", "post");
-            dict.SynonymRules = LoadKeyValueRule(doc, "stemmer", "synonyms");
-            dict.LinebreakRules = LoadValueOnlyRule(doc, "parser", "linebreak");
-            dict.NotALinebreakRules = LoadValueOnlyRule(doc, "parser", "linedontbreak");
-            dict.DepreciateValueRule = LoadValueOnlyRule(doc, "grader-syn", "depreciate");
-            dict.TermFreqMultiplierRule = LoadValueOnlySection(doc, "grader-tf");
 
-            dict.UnimportantWords = new List<Word>();
+            var doc = XElement.Load(dictionaryFile);
+            var dict = new Dictionary
+            {
+                Step1PrefixRules = LoadKeyValueRule(doc, "stemmer", "step1_pre"),
+                Step1SuffixRules = LoadKeyValueRule(doc, "stemmer", "step1_post"),
+                ManualReplacementRules = LoadKeyValueRule(doc, "stemmer", "manual"),
+                PrefixRules = LoadKeyValueRule(doc, "stemmer", "pre"),
+                SuffixRules = LoadKeyValueRule(doc, "stemmer", "post"),
+                SynonymRules = LoadKeyValueRule(doc, "stemmer", "synonyms"),
+                LinebreakRules = LoadValueOnlyRule(doc, "parser", "linebreak"),
+                NotALinebreakRules = LoadValueOnlyRule(doc, "parser", "linedontbreak"),
+                DepreciateValueRule = LoadValueOnlyRule(doc, "grader-syn", "depreciate"),
+                TermFreqMultiplierRule = LoadValueOnlySection(doc, "grader-tf"),
+                UnimportantWords = new List<Word>()
+            };
+
             var unimpwords = LoadValueOnlySection(doc, "grader-tc");
             
             foreach (var unimpword in unimpwords)
