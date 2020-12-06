@@ -14,7 +14,7 @@ namespace NLIIS_Autoreferer
         {
             _openFileDialog = new OpenFileDialog
             {
-                DefaultExt = "pdf",
+                DefaultExt = "txt",
                 CheckFileExists = true,
                 Multiselect = false
             };
@@ -38,16 +38,16 @@ namespace NLIIS_Autoreferer
         private void Refer(object sender, RoutedEventArgs e)
         {
             DocumentService.Language = Language.Text;
-            var text = DocumentService.FromPDF(DocumentToReferPath.Text);
+            var text = DocumentService.FromFile(DocumentToReferPath.Text);
             
             var classyRefer = _classyReferer.GenerateRefer(text);
             var keywordRefer = _keywordRefer.GenerateRefer(text);
 
-            ClassyReferPath.Content = "Classy: " + DocumentService.ToPDF(classyRefer);
-            KeywordReferPath.Content = "Keyword: " + DocumentService.ToPDF(keywordRefer);
+            ClassyReferPath.Content = "Classy: " + DocumentService.ToFile(classyRefer, "classy");
+            KeywordReferPath.Content = "Keyword: " + DocumentService.ToFile(keywordRefer, "keyword");
             
-            _classyReferer.Clean();
-            _keywordRefer.Clean();
+            _classyReferer.Clear();
+            _keywordRefer.Clear();
         }
         
         private void OpenFileDialog(object sender, RoutedEventArgs e)

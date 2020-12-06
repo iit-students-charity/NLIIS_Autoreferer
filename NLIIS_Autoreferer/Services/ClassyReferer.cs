@@ -93,7 +93,7 @@ namespace NLIIS_Autoreferer.Services
             return string.Join(".", sentenceToChoose.Select(sentence => sentence.Text));
         }
 
-        public void Clean()
+        public void Clear()
         {
             AllSymbolsCount = 0;
             TermsFrequencies.Clear();

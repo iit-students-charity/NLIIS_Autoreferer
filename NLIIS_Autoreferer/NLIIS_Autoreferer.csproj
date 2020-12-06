@@ -8,13 +8,4 @@
     <ItemGroup>
       <PackageReference Include="BitMiracle.Docotic.Pdf.Beta" Version="4.6.6905" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Models" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Update="Services\KeywordSpecific\Deutsch.xml" CopyToOutputDirectory="PreserveNewest" />
-        <None Update="Services\KeywordSpecific\Russian.xml" CopyToOutputDirectory="PreserveNewest" />
-    </ItemGroup>
 </Project>

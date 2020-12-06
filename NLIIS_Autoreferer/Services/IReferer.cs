@@ -3,6 +3,6 @@
     public interface IReferer
     {
         string GenerateRefer(string text);
-        void Clean();
+        void Clear();
     }
 }
