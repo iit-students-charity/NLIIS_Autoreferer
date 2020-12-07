@@ -5,20 +5,6 @@ namespace NLIIS_Autoreferer.Services
 {
     public class KeywordReferer : IReferer
     {
-        /*public string GenerateRefer(string text)
-        {
-            var sumargs = new SummarizerArguments
-            {
-                DictionaryLanguage = DocumentService.Language,
-                DisplayLines = 10,
-                DisplayPercent = 0,
-                InputString = text
-            };
-            var doc = Summarizer.Summarize(sumargs);
-            
-            return string.Empty;
-        }*/
-
         private IDictionary<string, int> TermsFrequencies { get; set; }
 
         public KeywordReferer()
@@ -30,20 +16,65 @@ namespace NLIIS_Autoreferer.Services
         {
             TermsFrequencies = DocumentService.GetTermsFrequencies(text, true);
             var result = string.Empty;
+            var wordValuableFrequency= 5;
             var mostValuable = TermsFrequencies
                 .OrderByDescending(termFrequency => termFrequency.Value)
-                .Where(termFrequency => termFrequency.Value > 4)
-                .Where(termFrequency => !DocumentService.IsAdjective(termFrequency.Key));
+                .Where(termFrequency => termFrequency.Value > wordValuableFrequency)
+                .Where(termFrequency => !DocumentService.IsAdjective(termFrequency.Key) && !DocumentService.IsVerb(termFrequency.Key))
+                .Select(termFrequency => termFrequency.Key);
+            var withoutForms = RemoveForms(mostValuable);
+            var valuableWords = TermsFrequencies
+                .Where(termFrequency => termFrequency.Value > wordValuableFrequency)
+                .Where(termFrequency => !DocumentService.IsAdjective(termFrequency.Key) && !DocumentService.IsVerb(termFrequency.Key))
+                .Select(termFrequency => termFrequency.Key);
+
+            var allPhrases = new List<string>();
             
-            foreach (var (term, _) in mostValuable)
+            foreach (var term in withoutForms)
             {
-                var phrases = DocumentService.GetPhrases(term, text);
-                
                 result += $"\n{term}";
-                result = phrases.Aggregate(result, (current, phrase) => current + $"\n\t{phrase.ToLower()}");
+                
+                var phrases = DocumentService.GetPhrases(term, text, valuableWords);
+
+                foreach (var phrase in phrases)
+                {
+                    if (!allPhrases.Contains(phrase))
+                    {
+                        result += $"\n\t{phrase.ToLower()}";
+                        allPhrases.Add(phrase);
+                    }
+                }
             }
 
             return result;
+        }
+
+        private IEnumerable<string> RemoveForms(IEnumerable<string> words)
+        {
+            var toExclude = new List<string>();
+            
+            foreach (var origin in words)
+            {
+                var haveForms = false;
+                
+                foreach (var toCompare in words.Except(new [] { origin }))
+                {
+                    haveForms = origin.Contains(toCompare.Substring(0, toCompare.Length - 3)) &&
+                                origin.Length - toCompare.Length < 3;
+
+                    if (haveForms)
+                    {
+                        break;
+                    }
+                }
+
+                if (!haveForms && !toExclude.Contains(origin))
+                {
+                    toExclude.Add(origin);
+                }
+            }
+
+            return toExclude;
         }
 
         public void Clear()

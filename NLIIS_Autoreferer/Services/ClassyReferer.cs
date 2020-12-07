@@ -87,7 +87,7 @@ namespace NLIIS_Autoreferer.Services
 
             var sentenceToChoose = Sentences
                 .OrderByDescending(sentence => sentence.Weight)
-                .Take(15)
+                .Take(10)
                 .OrderBy(sentence => sentence.Number)
                 .ToList();
             return string.Join(".", sentenceToChoose.Select(sentence => sentence.Text));
