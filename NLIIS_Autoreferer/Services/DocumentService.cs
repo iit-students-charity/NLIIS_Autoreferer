@@ -42,10 +42,12 @@ namespace NLIIS_Autoreferer.Services
             return words;
         }
         
-        public static IEnumerable<string> GetPhrases(string term, string text)
+        public static IEnumerable<string> GetPhrases(string term, string text, IEnumerable<string> valuableWords)
         {
-            var pattern = GetWordMatchPattern();
-            var rawPhrases = Regex.Matches(text, $"{pattern}\\s{term}|{term}\\s{pattern}", RegexOptions.Compiled)
+            var valuablePattern = string.Join("|", valuableWords);
+            var rawPhrases = Regex.Matches(
+                    text, $"({valuablePattern})\\s{term}|{term}\\s({valuablePattern})",
+                    RegexOptions.Compiled)
                 .Select(match => match.Value);
             
             var phrases = rawPhrases.ToHashSet().AsEnumerable();
@@ -96,16 +98,17 @@ namespace NLIIS_Autoreferer.Services
         {
             return Language switch
             {
-                "Russian" => new List<string>() { "она", "они", "ему", "как", "где", "что", "кто", "раз", "два",
+                "Russian" => new List<string> { "она", "они", "ему", "как", "где", "что", "кто", "раз", "два",
                     "один", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять", "десять", "кем", "чем",
                     "или", "зачем", "почему", "откуда", "куда", "каким", "лучше", "лучший", "либо", "таким",
                     "напротив", "лишь", "может", "могут", "даже", "немного", "также", "скоро", "кажется", "для",
-                    "таких", "более", "того", "чтобы", "это", "тем", "этой", "всей", "иногда", "одной",
+                    "таких", "более", "того", "чтобы", "это", "тем", "этой", "всей", "иногда", "одной", "был", "была",
                     "например", "кому", "кому-то", "каким-либо", "нужен", "ради", "очень", "гораздо", "точно", "двум",
                     "быть", "которые", "являются", "является", "есть", "обычно", "которая", "которые", "которую", "которым",
-                    "тот", "тому", "такой", "третий", "четвертый", "пятый", "другой", "второй", "первый", "зря", },
-                "Deutsch" => new List<string>() { "eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht",
-                    "neun", "zehn", "elf", "zwölf", "das", "der", "die", "sein", "tun",
+                    "тот", "тому", "такой", "третий", "четвертый", "пятый", "другой", "второй", "первый", "зря", 
+                    "относительно", "относится", "относиться", "являться", "явиться", "каков", "наиболее", "часто" },
+                "Deutsch" => new List<string> { "eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht",
+                    "neun", "zehn", "elf", "zwölf", "das", "der", "die", "sein", "tun", "und",
                     "können", "haben", "werden", "sagen", "machen", "brauchen", "bekommen", "tun" },
                 _ => throw new ArgumentException($"Language {Language} is not supported")
             };
@@ -123,7 +126,24 @@ namespace NLIIS_Autoreferer.Services
                 "Russian" => term.EndsWith("ый") || term.EndsWith("ая") || term.EndsWith("ого") || term.EndsWith("ой") ||
                              term.EndsWith("ему") || term.EndsWith("ей") || term.EndsWith("его") || term.EndsWith("ую") ||
                              term.EndsWith("им") || term.EndsWith("ем") || term.EndsWith("ом") || term.EndsWith("ой") ||
-                             term.EndsWith("ое"),
+                             term.EndsWith("ое") || term.EndsWith("ые") || term.EndsWith("ым") || term.EndsWith("ых") ||
+                             term.EndsWith("ыми") || term.EndsWith("их"),
+                "Deutsch" => false,
+                _ => throw new ArgumentException($"Language {Language} is not supported")
+            };
+        }
+
+        public static bool IsVerb(string term)
+        {
+            if (term.Length < 4)
+            {
+                return false;
+            }
+            
+            return Language switch
+            {
+                "Russian" => term.EndsWith("тся") || term.EndsWith("ться")  || term.EndsWith("ают") ||
+                             term.EndsWith("ает"),
                 "Deutsch" => false,
                 _ => throw new ArgumentException($"Language {Language} is not supported")
             };
